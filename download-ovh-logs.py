@@ -48,5 +48,5 @@ date_live_list = [base - datetime.timedelta(days=x) for x in range(2)]
 for day in date_live_list:
         filename = OVH_STATS_ACCOUNT_NAME +"-"+ day.strftime("%d-%m-%Y") +".log"
         fileurl = "https://logs."+ OVH_STATS_CLUSTER +".hosting.ovh.net/"+ OVH_STATS_ACCOUNT_NAME +"/osl/"+ filename
-        localfilepath = LOG_PATH_BASE +"/today/"+ filename
+        localfilepath = conf['LOG_PATH_BASE'] +"/today/"+ filename
         downloadAndSave(fileurl, localfilepath, force=True)
