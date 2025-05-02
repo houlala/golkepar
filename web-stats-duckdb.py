@@ -4,9 +4,8 @@ from dotenv import dotenv_values
 # Load .env
 print("Load .env")
 conf = dotenv_values(".env")
-
 DUCKDB_FILE = conf['DUCKDB_FILE']
-PARQUET_FILES = conf['PARQUET_FILES']
+PARQUET_PATH_BASE = conf['PARQUET_PATH_BASE']
 
 regexpbots = ['googlebot-news', 'googlebot-video', 'mediapartners-google', 'adsBot-google-mobile-apps', 
               'adsBot-google', 'googlebot', 'duckduckbot', 'bingbot', 'applebot', 'wordpress', 'dataprovider', 
@@ -19,7 +18,7 @@ regexpbotsString = '|'.join(regexpbots)
 
 with duckdb.connect(DUCKDB_FILE) as db:
     db.sql('DROP TABLE IF EXISTS logs')
-    db.sql('CREATE TABLE logs AS SELECT * FROM "'+ PARQUET_FILES +'"')
+    db.sql('CREATE TABLE logs AS SELECT * FROM "'+ PARQUET_PATH_BASE +'/logs-*.parquet"')
 
 with duckdb.connect(DUCKDB_FILE) as db:
     db.sql('DROP TABLE IF EXISTS ip_marked_as_admin')

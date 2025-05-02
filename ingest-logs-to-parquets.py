@@ -3,6 +3,7 @@
 import os
 import time
 import pandas as pd
+import pyarrow
 import numpy as np
 import re
 import hashlib
@@ -16,6 +17,7 @@ conf = dotenv_values(".env")
 LOG_PATH_BASE = conf['LOG_PATH_BASE']
 LOG_FORMAT =  conf['LOG_FORMAT']
 IP_PATH_BASE = conf['IP_PATH_BASE']
+PARQUET_PATH_BASE = conf['PARQUET_PATH_BASE']
 
 # Load the MMDB files
 city_ipv4_reader = maxminddb.open_database(IP_PATH_BASE +'/geolite2-city-ipv4.mmdb')
@@ -51,10 +53,10 @@ def get_asn_info(ip):
 # print(city, country_code, asn)
 
 # Directory containing log files
-log_directory = LOG_PATH_BASE +'/logs/access/'
-parquet_directory = LOG_PATH_BASE +'/parquets/'
+log_directory = LOG_PATH_BASE +'/access/'
+
 # Ensure the parquet directory exists
-os.makedirs(parquet_directory, exist_ok=True)
+os.makedirs(PARQUET_PATH_BASE, exist_ok=True)
 
 # Pattern below is from the LogFormat setting in apache2.conf/httpd.conf file
 # You will likely need to change this value to the pattern your system uses
@@ -84,7 +86,7 @@ for root, dirs, files in os.walk(log_directory):
                     rows = []
 
                     # Define the Parquet file name
-                    parquet_file = os.path.join(parquet_directory, f'logs-{year}-{month}.parquet')
+                    parquet_file = os.path.join(PARQUET_PATH_BASE, f'logs-{year}-{month}.parquet')
 
                     # Skip parsing if the Parquet file already exists and is newer than all log files
                     if os.path.exists(parquet_file):

@@ -9,6 +9,7 @@ maxminddb==2.6.3
 numpy==2.2.5
 packaging==25.0
 pandas==2.2.3
+pyarrow==20.0.0
 pydicti==1.2.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
