@@ -2,4 +2,4 @@ venv
 .env
 old/
 .ipynb_checkpoints
-
+.DS_Store
