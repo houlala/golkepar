@@ -12,8 +12,8 @@ regexpbots = ['googlebot-news', 'googlebot-video', 'mediapartners-google', 'adsB
               'go-http-client', 'facebookexternalhit', 'whatsapp', 'wp-rocket', 'okhttp', 'wappalyzer', 'apple-pubsub',
               'checkmarknetwork', 'ruby','meta-externalagent', 'node-fetch', 'python', 'qr scanner android', 
               'microsoft office excel', 'klhttpclientcurl', 'threatview', 'owler', 'apidae', 'checker', 'grequests',
-              'censysinspect', 'expanse', 'symfony', 'turnitin', 'scrapy', 'postman', 'geedo',
-              'chatgpt', 'crawler', '([a-zA-Z0-9]{2,10}bot)', '...bot']
+              'censysinspect', 'expanse', 'symfony', 'turnitin', 'scrapy', 'postman', 'geedo', 'cronproxy', 'curl'
+              'chatgpt', 'crawler', '^0$', '([a-zA-Z0-9]{2,10}bot)', '...bot']
 regexpbotsString = '|'.join(regexpbots)
 
 with duckdb.connect(DUCKDB_FILE) as db:
@@ -49,7 +49,8 @@ with duckdb.connect(DUCKDB_FILE) as db:
         IF(ip IN (SELECT ip FROM ips_user_agent_identified_like_bot), 'bot_agent', 'not_bot_agent') is_bot_status,
         IF(ip IN (SELECT ip FROM ip_marked_as_admin), 'ip_went_into_admin_area', 'not_ip_went_into_admin_area') ip_admin_status,
         IF(ip IN (SELECT ip FROM ip_that_got_bad_status), 'ip_bad_status', 'not_ip_bad_status') ip_reputation_status,
-        regexp_extract(LOWER(user_agent), '{regexpbotsString}') agent
+        regexp_extract(LOWER(user_agent), '{regexpbotsString}') agent,
+        replace(regexp_extract(LOWER(referer), '^https?://([a-z\.\-_]+)/.*$', 1), 'www.', '') referer_domain
     FROM logs
     WHERE /* status IN (200,201) /* uniquement les requêtes réussies */ AND */
     NOT regexp_matches(path, '^/wp-') /* Ne pas compter les assets */
